@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>作品展示平台</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f0f2f5;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        
+        .section {
+            margin-bottom: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        button:hover {
+            background: #2980b9;
+        }
+        
+        .display-area {
+            width: 480px;
+            height: 380px;
+            margin: 20px auto;
+            border: 2px solid #000;
+            border-radius: 8px;
+            overflow: hidden;
+            background: white;
+        }
+        
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .message {
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        
+        .error {
+            background: #ffdddd;
+            color: #ff0000;
+            border: 1px solid #ff0000;
+        }
+        
+        .success {
+            background: #ddffdd;
+            color: #008800;
+            border: 1px solid #008800;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        /* 音乐播放器样式 */
+        .music-player {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+        }
+        
+        .music-btn {
+            width: 40px;
+            height: 40px;
+            background: #3498db;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .music-btn i {
+            font-size: 20px;
+        }
+        
+        .music-iframe {
+            position: absolute;
+            top: 0;
+            left: 50px;
+            width: 330px;
+            height: 86px;
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        @media (max-width: 600px) {
+            .display-area {
+                width: 100%;
+                height: 300px;
+            }
+            
+            .music-iframe {
+                left: 0;
+                top: 50px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <h1>作品展示平台</h1>
+    
+    <!-- 暗号输入部分 -->
+    <div id="codeSection" class="section">
+        <h2>第一步：请输入暗号</h2>
+        <div class="input-group">
+            <label for="secretCode">暗号：</label>
+            <input type="text" id="secretCode" placeholder="请输入暗号">
+        </div>
+        <button id="verifyCode">验证暗号</button>
+        <div id="codeMessage" class="message hidden"></div>
+    </div>
+    
+    <!-- 作品码输入和展示部分 -->
+    <div id="workSection" class="section hidden">
+        <h2>第二步：请输入作品码</h2>
+        <div class="input-group">
+            <label for="workCode">作品码：</label>
+            <input type="text" id="workCode" placeholder="请输入作品码">
+        </div>
+        <button id="loadWork">加载作品</button>
+        <div id="workMessage" class="message hidden"></div>
+        
+        <div class="display-area">
+            <iframe id="workFrame" src="about:blank"></iframe>
+        </div>
+    </div>
+    
+    <!-- 音乐播放器 -->
+    <div id="musicPlayer" class="music-player hidden">
+        <div id="musicBtn" class="music-btn">
+            <i class="fas fa-music"></i>
+        </div>
+        <div id="musicIframe" class="music-iframe hidden">
+            <!-- 网易云音乐iframe将在这里动态加载 -->
+        </div>
+    </div>
+
+    <script>
+        // 页面加载完成后执行
+        window.onload = function() {
+            // 获取DOM元素
+            var codeSection = document.getElementById('codeSection');
+            var workSection = document.getElementById('workSection');
+            var secretCodeInput = document.getElementById('secretCode');
+            var verifyCodeBtn = document.getElementById('verifyCode');
+            var codeMessage = document.getElementById('codeMessage');
+            var workCodeInput = document.getElementById('workCode');
+            var loadWorkBtn = document.getElementById('loadWork');
+            var workMessage = document.getElementById('workMessage');
+            var workFrame = document.getElementById('workFrame');
+            var musicPlayer = document.getElementById('musicPlayer');
+            var musicBtn = document.getElementById('musicBtn');
+            var musicIframe = document.getElementById('musicIframe');
+            
+            // 验证暗号
+            verifyCodeBtn.onclick = function() {
+                var code = secretCodeInput.value.trim();
+                if (code === '') {
+                    showMessage(codeMessage, '请输入暗号', 'error');
+                    return;
+                }
+                
+                // 使用AJAX获取an.txt文件
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', 'an.txt', true);
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4) {
+                        if (xhr.status === 200) {
+                            var codes = xhr.responseText.split('\n');
+                            var valid = false;
+                            
+                            // 检查输入的暗号是否在列表中（不区分大小写）
+                            for (var i = 0; i < codes.length; i++) {
+                                if (codes[i].trim().toLowerCase() === code.toLowerCase()) {
+                                    valid = true;
+                                    break;
+                                }
+                            }
+                            
+                            if (valid) {
+                                showMessage(codeMessage, '暗号验证成功！', 'success');
+                                // 隐藏暗号部分，显示作品部分
+                                codeSection.classList.add('hidden');
+                                workSection.classList.remove('hidden');
+                            } else {
+                                showMessage(codeMessage, '暗号错误，请重新输入', 'error');
+                            }
+                        } else {
+                            showMessage(codeMessage, '无法验证暗号，请稍后再试', 'error');
+                        }
+                    }
+                };
+                xhr.send();
+            };
+            
+            // 加载作品
+            loadWorkBtn.onclick = function() {
+                var workCode = workCodeInput.value.trim();
+                if (workCode === '') {
+                    showMessage(workMessage, '请输入作品码', 'error');
+                    return;
+                }
+                
+                // 构建作品文件路径
+                var workPath = 'works/' + workCode + '/index.html';
+                
+                // 检查文件是否存在
+                var xhr = new XMLHttpRequest();
+                xhr.open('HEAD', workPath, true);
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4) {
+                        if (xhr.status === 200) {
+                            // 文件存在，加载到iframe中
+                            workFrame.src = workPath;
+                            showMessage(workMessage, '作品加载成功！', 'success');
+                            
+                            // 显示音乐播放器按钮
+                            musicPlayer.classList.remove('hidden');
+                            
+                            // 获取音乐编号
+                            getMusicNumber(workCode);
+                        } else {
+                            showMessage(workMessage, '作品不存在，请检查作品码', 'error');
+                            workFrame.src = 'about:blank';
+                        }
+                    }
+                };
+                xhr.send();
+            };
+            
+            // 获取音乐编号
+            function getMusicNumber(workCode) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', 'music.ini', true);
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        var content = xhr.responseText;
+                        var lines = content.split('\n');
+                        var currentSection = '';
+                        var musicNumber = '';
+                        
+                        for (var i = 0; i < lines.length; i++) {
+                            var line = lines[i].trim();
+                            
+                            // 检查是否是章节标题
+                            if (line.startsWith('[') && line.endsWith(']')) {
+                                currentSection = line.substring(1, line.length - 1);
+                                continue;
+                            }
+                            
+                            // 检查是否是number属性
+                            if (line.startsWith('number=') && currentSection === workCode) {
+                                musicNumber = line.substring(7);
+                                break;
+                            }
+                        }
+                        
+                        if (musicNumber) {
+                            // 创建网易云音乐iframe
+                            var iframeHtml = '<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=' + musicNumber + '&auto=0&height=66"></iframe>';
+                            musicIframe.innerHTML = iframeHtml;
+                        }
+                    }
+                };
+                xhr.send();
+            }
+            
+            // 显示消息的函数
+            function showMessage(element, text, type) {
+                element.textContent = text;
+                element.className = 'message ' + type;
+                element.classList.remove('hidden');
+            }
+            
+            // 按回车键触发按钮点击事件
+            secretCodeInput.onkeypress = function(e) {
+                if (e.keyCode === 13) {
+                    verifyCodeBtn.click();
+                }
+            };
+            
+            workCodeInput.onkeypress = function(e) {
+                if (e.keyCode === 13) {
+                    loadWorkBtn.click();
+                }
+            };
+            
+            // 音乐按钮点击事件
+            musicBtn.onclick = function(e) {
+                e.stopPropagation();
+                musicIframe.classList.remove('hidden');
+                musicBtn.classList.add('hidden');
+            };
+            
+            // 点击页面其他区域隐藏音乐播放器
+            document.addEventListener('click', function(e) {
+                if (!musicIframe.contains(e.target) && e.target !== musicBtn) {
+                    musicIframe.classList.add('hidden');
+                    musicBtn.classList.remove('hidden');
+                }
+            });
+            
+            // 阻止点击音乐播放器时冒泡
+            musicIframe.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        };
+    </script>
+</body>
+</html>
