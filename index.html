@@ -16,63 +16,73 @@
             background-color: #f0f2f5;
             color: #333;
             line-height: 1.6;
-            padding: 20px;
+            padding: 15px;
             max-width: 1000px;
             margin: 0 auto;
+            min-height: 100vh;
         }
         
         h1 {
             text-align: center;
-            margin-bottom: 20px;
+            margin: 15px 0;
             color: #2c3e50;
+            font-size: 24px;
         }
         
         .section {
             margin-bottom: 20px;
-            padding: 20px;
+            padding: 15px;
             background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
         
         .input-group {
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
         
         label {
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
+            font-size: 14px;
         }
         
         input[type="text"] {
             width: 100%;
-            padding: 10px;
+            padding: 8px;
             border: 1px solid #ccc;
             border-radius: 4px;
-            font-size: 16px;
+            font-size: 14px;
         }
         
         button {
-            padding: 10px 20px;
+            padding: 8px 16px;
             background: #3498db;
             color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 14px;
         }
         
         button:hover {
             background: #2980b9;
         }
         
+        .display-container {
+            width: 100%;
+            margin: 15px auto;
+            display: flex;
+            justify-content: center;
+        }
+        
         .display-area {
-            width: 480px;
-            height: 380px;
-            margin: 20px auto;
+            width: 100%;
+            max-width: 480px;
+            aspect-ratio: 480/380;
             border: 2px solid #000;
-            border-radius: 8px;
+            border-radius: 6px;
             overflow: hidden;
             background: white;
         }
@@ -84,10 +94,11 @@
         }
         
         .message {
-            padding: 10px;
+            padding: 8px;
             margin-top: 10px;
             border-radius: 4px;
             text-align: center;
+            font-size: 14px;
         }
         
         .error {
@@ -109,14 +120,14 @@
         /* 音乐播放器样式 */
         .music-player {
             position: fixed;
-            top: 20px;
-            left: 20px;
+            top: 15px;
+            left: 15px;
             z-index: 100;
         }
         
         .music-btn {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             background: #3498db;
             color: white;
             border-radius: 50%;
@@ -124,33 +135,48 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
         }
         
         .music-btn i {
-            font-size: 20px;
+            font-size: 18px;
         }
         
         .music-iframe {
             position: absolute;
             top: 0;
-            left: 50px;
-            width: 330px;
-            height: 86px;
+            left: 45px;
+            width: 310px;
+            height: 66px;
             background: white;
-            border-radius: 5px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
         }
         
         @media (max-width: 600px) {
-            .display-area {
-                width: 100%;
-                height: 300px;
+            body {
+                padding: 10px;
+            }
+            
+            .section {
+                padding: 12px;
             }
             
             .music-iframe {
                 left: 0;
-                top: 50px;
+                top: 40px;
+                width: 280px;
+            }
+            
+            h1 {
+                font-size: 20px;
+            }
+        }
+        
+        @media (max-width: 400px) {
+            .music-iframe {
+                width: 250px;
             }
         }
     </style>
@@ -180,8 +206,10 @@
         <button id="loadWork">加载作品</button>
         <div id="workMessage" class="message hidden"></div>
         
-        <div class="display-area">
-            <iframe id="workFrame" src="about:blank"></iframe>
+        <div class="display-container">
+            <div class="display-area">
+                <iframe id="workFrame" src="about:blank"></iframe>
+            </div>
         </div>
     </div>
     
@@ -317,7 +345,7 @@
                         
                         if (musicNumber) {
                             // 创建网易云音乐iframe
-                            var iframeHtml = '<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=' + musicNumber + '&auto=0&height=66"></iframe>';
+                            var iframeHtml = '<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=310 height=66 src="//music.163.com/outchain/player?type=2&id=' + musicNumber + '&auto=0&height=66"></iframe>';
                             musicIframe.innerHTML = iframeHtml;
                         }
                     }
