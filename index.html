@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>作品展示平台</title>
+    <title>火柴云共创平台</title>
     <style>
         * {
             margin: 0;
@@ -198,22 +198,22 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <h1>作品展示平台</h1>
+    <h1>火柴云共创</h1>
     
     <!-- 暗号输入部分 -->
     <div id="codeSection" class="section">
-        <h2>第一步：请输入暗号</h2>
+        <h2>请输入暗号以进行身份验证</h2>
         <div class="input-group">
             <label for="secretCode">暗号：</label>
             <input type="text" id="secretCode" placeholder="请输入暗号">
         </div>
-        <button id="verifyCode">验证暗号</button>
+        <button id="verifyCode">验证</button>
         <div id="codeMessage" class="message hidden"></div>
     </div>
     
     <!-- 作品码输入和展示部分 -->
     <div id="workSection" class="section hidden">
-        <h2>第二步：请输入作品码</h2>
+        <h2>请输入作品码</h2>
         <div class="input-group">
             <label for="workCode">作品码：</label>
             <input type="text" id="workCode" placeholder="请输入作品码">
@@ -360,7 +360,7 @@
                         
                         if (musicNumber) {
                             // 创建网易云音乐iframe
-                            var iframeHtml = '<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=310 height=66 src="//music.163.com/outchain/player?type=2&id=' + musicNumber + '&auto=0&height=66"></iframe>';
+                            var iframeHtml = '<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=310 height=60 src="//music.163.com/outchain/player?type=2&id=' + musicNumber + '&auto=0&height=66"></iframe>';
                             musicIframe.innerHTML = iframeHtml;
                         }
                     }
